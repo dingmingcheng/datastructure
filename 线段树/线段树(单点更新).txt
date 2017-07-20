@@ -1,0 +1,77 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+#define MAX_N 200000 // 定义最大节点数
+
+typedef struct node//树的一个节点
+{
+    int left;
+    int right;
+    int data;
+    int maxx;
+}node;
+
+node stu[MAX_N*4];
+
+void CreateTree(int ii,int a,int b)//递归建树过程
+{
+    stu[ii].left = a;
+    stu[ii].right = b;
+    stu[ii].maxx = 0;
+    stu[ii].data = 0;
+    if(a == b){
+        return;
+    }
+    else{
+        int mid = (a+b)>>1;
+        CreateTree(ii*2, a, mid);//建立左子树
+        CreateTree(ii*2+1, mid+1, b);//建立右子树
+    }
+}
+
+void updata(int ii,int a,int b){//将第a个节点的值修改为b
+    if(stu[ii].left == a && stu[ii].right == a){
+        stu[ii].data = b;
+        stu[ii].maxx = b;
+    }
+    else{
+        int mid = (stu[ii].left+stu[ii].right)>>1;
+        if(a <= mid){
+            updata(ii*2,a,b);
+        }
+        else{
+            updata(ii*2+1,a,b);
+        }
+    }
+}
+
+void find1(int ii,int a,int b)//对[a,b]区间进行递归查询
+{
+    if(stu[ii].left == a && stu[ii].right == b){    
+    }
+    else {
+        int mid = (stu[ii].left + stu[ii].right)>>1;
+        if(b <= mid)
+        {
+            find1(ii*2,a,b);
+        }
+        else if(a > mid)
+        {
+            find1(ii*2+1,a,b);
+        }
+        else
+        {
+            find1(ii*2,a,mid);
+            find1(ii*2+1,mid+1,b);
+        }
+    }
+}
+
+int main()
+{
+    CreateTree(1,1,n);//建立一棵n个节点的线段树
+    updata(1,i,num);
+    find1(1,x1,x2);
+    updata(1,x1,x2);
+    return 0;
+}
