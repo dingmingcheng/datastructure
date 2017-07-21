@@ -1,9 +1,9 @@
-#include<bits/stdc++.h>
+ï»¿#include<bits/stdc++.h>
 using namespace std;
 
-#define MAX_N 200000 // ¶¨Òå×î´ó½ÚµãÊı
+#define MAX_N 200000 // å®šä¹‰æœ€å¤§èŠ‚ç‚¹æ•°
 
-typedef struct node//Ê÷µÄÒ»¸ö½Úµã
+typedef struct node//æ ‘çš„ä¸€ä¸ªèŠ‚ç‚¹
 {
     int left;
     int right;
@@ -13,7 +13,7 @@ typedef struct node//Ê÷µÄÒ»¸ö½Úµã
 
 node stu[MAX_N*4];
 
-void CreateTree(int ii,int a,int b)//µİ¹é½¨Ê÷¹ı³Ì
+void CreateTree(int ii,int a,int b)//é€’å½’å»ºæ ‘è¿‡ç¨‹
 {
     stu[ii].left = a;
     stu[ii].right = b;
@@ -24,12 +24,12 @@ void CreateTree(int ii,int a,int b)//µİ¹é½¨Ê÷¹ı³Ì
     }
     else{
         int mid = (a+b)>>1;
-        CreateTree(ii*2, a, mid);//½¨Á¢×ó×ÓÊ÷
-        CreateTree(ii*2+1, mid+1, b);//½¨Á¢ÓÒ×ÓÊ÷
+        CreateTree(ii*2, a, mid);//å»ºç«‹å·¦å­æ ‘
+        CreateTree(ii*2+1, mid+1, b);//å»ºç«‹å³å­æ ‘
     }
 }
 
-void updata(int ii,int a,int b){//½«µÚa¸ö½ÚµãµÄÖµĞŞ¸ÄÎªb
+void updata(int ii,int a,int b){//å°†ç¬¬aä¸ªèŠ‚ç‚¹çš„å€¼ä¿®æ”¹ä¸ºb
     if(stu[ii].left == a && stu[ii].right == a){
         stu[ii].data = b;
         stu[ii].maxx = b;
@@ -45,7 +45,7 @@ void updata(int ii,int a,int b){//½«µÚa¸ö½ÚµãµÄÖµĞŞ¸ÄÎªb
     }
 }
 
-void find1(int ii,int a,int b)//¶Ô[a,b]Çø¼ä½øĞĞµİ¹é²éÑ¯
+void find1(int ii,int a,int b)//å¯¹[a,b]åŒºé—´è¿›è¡Œé€’å½’æŸ¥è¯¢
 {
     if(stu[ii].left == a && stu[ii].right == b){    
     }
@@ -69,7 +69,7 @@ void find1(int ii,int a,int b)//¶Ô[a,b]Çø¼ä½øĞĞµİ¹é²éÑ¯
 
 int main()
 {
-    CreateTree(1,1,n);//½¨Á¢Ò»¿Ãn¸ö½ÚµãµÄÏß¶ÎÊ÷
+    CreateTree(1,1,n);//å»ºç«‹ä¸€æ£µnä¸ªèŠ‚ç‚¹çš„çº¿æ®µæ ‘
     updata(1,i,num);
     find1(1,x1,x2);
     updata(1,x1,x2);
