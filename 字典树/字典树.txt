@@ -1,0 +1,68 @@
+/**
+*
+* 类似字典
+* Trie树，是一种树形结构，是一种哈希树的变种。典型应用是用于统计，排序和保存大量的字符串（但不仅限于字符串），
+* 所以经常被搜索引擎系统用于文本词频统计
+* 利用字符串的公共前缀来减少查询时间
+*
+*/
+
+#define ll int
+#define Word_Len 400005
+#define Sigma_size 95
+
+struct Trie{
+	ll ch[Word_Len][Sigma_size], sz;	 //Word_Len是字典树的节点数 若都是小写字母Sigma_size=26 sz为当前节点数
+	ll Have_word[Word_Len];		 //这个节点下有几个单词
+	ll val[Word_Len];				 // 这个节点附带的信息，初始化为0表示这个节点不存在单词，所以节点带的信息必须!=0
+	ll pre[Word_Len];  
+	char he[Word_Len];  
+	ll Newnode()
+	{
+		memset(ch[sz], 0, sizeof(ch[sz])); 
+		val[sz]=Have_word[sz]=0; 
+		return sz++;
+	}
+	void init()							 //初始化字典树
+	{ 
+		sz = 0; 
+		Newnode();
+	}//初始化
+	ll idx(char c){return c-'a';}	 //字符串编号
+
+	int insert(char *s){	 //把v数字加给 s单词最后一个字母
+		ll u = 0;
+		for(ll i = 0; s[i]; i++){
+			ll c = idx(s[i]);
+			
+			if(!ch[u][c])		     //节点不存在就新建后附加
+			{
+				ch[u][c] = Newnode();	
+				he[sz-1] = s[i];
+				val[sz-1] = val[u]+1;
+				pre[sz-1] = u;
+			}		
+			u = ch[u][c];
+			Have_word[u]++;	
+		}
+		return u;
+	}
+	ll find_word(char *s){
+		ll u = 0;
+		for(ll i = 0; s[i]; i++){
+			ll c = idx(s[i]);
+			if(!ch[u][c])return 0;		//节点不存在
+			u = ch[u][c];
+		}
+		return Have_word[u];
+	}
+	void Have_name(char *s, ll now){  
+		ll len = val[now], cc = now;  
+		s[len--] = 0;  
+		while(cc)  
+		{
+			s[len--] = he[cc];  
+			cc = pre[cc];  
+		}  
+	}
+};

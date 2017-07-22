@@ -1,0 +1,46 @@
+/**
+*
+* 一般用于求非常大的一个范围内的数字的个数
+* 注意的地方：数位dp是根据记忆化数组的一个深搜   而且要注意dfs中对 前导0 的处理，因为000010001也算一种状态
+* 
+**/
+ll DP[20][20][3];//dp记忆化数组根据题意编写，确定可保存状态
+int DIG[20];
+ll dfs(int pos,int shu,int iso,int limit)
+{
+    //printf("%d\n",pos);
+    if(pos < 1)
+    {
+        // 根据题意编写
+    }
+
+    if(!limit && DP[pos][shu][iso] != -1)
+        return    DP[pos][shu][iso];
+
+    ll    end1 = limit ? DIG[pos] : 9;
+    ll    ret = 0;
+    for(int i = 0;i <= end1;i ++)
+    {
+        // 根据题意编写
+    }
+    if(!limit)
+        DP[pos][shu][iso] = ret;
+
+    return  ret;
+}
+ll cal(ll x)
+{
+    int len=0;
+    while(x)
+    {
+        DIG[++len]=x%10;
+        x=x/10;
+    }
+    return dfs(len,0,0,1);
+}
+int main()
+{
+	memset(DP,-1,sizeof(DP));
+    printf("%I64d\n",cal(m)-cal(n-1));// 区间[m,n]
+    return 0;
+}

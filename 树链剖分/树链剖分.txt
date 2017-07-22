@@ -1,0 +1,110 @@
+/**
+* 树链剖分是解决在树上进行插点问线，插线问点等一系列树上的问题
+* 假如现在给你一棵树，然后没两条边之间有一条权值，有一些操作
+*
+* 1：x---y之间的最大权值是多少，
+* 2：改变x---y之间的权值
+*
+* 直接暴力TLE
+*
+* 树链，就是树上的路径。剖分，就是把路径分类为重链和轻链。
+*
+* 一些重要的概念
+*    重儿子：siz[u]为v的子节点中siz值最大的，那么u就是v的重儿子。
+*    轻儿子：v的其它子节点。
+*    重边：点v与其重儿子的连边。
+*    轻边：点v与其轻儿子的连边。
+*    重链：由重边连成的路径。
+*    轻链：轻边。
+*
+* 第一遍dfs求出基本的信息，如深度，儿子节点数
+* 第二遍构建重链
+* 结合一些数据结构，如树状数组，线段树，splay等维护这条链
+**/
+
+
+
+/**
+* 邻接表
+* 由fir数组和edge.next控制，形成一个链
+*/
+struct Edge {
+	int v,  next;
+};
+Edge edge[(N + M) << 1];
+int fir[N + M];
+int cnt;
+/* 初始化  */
+void init() {
+	cnt = 0;
+	tim=0;
+	memset(fir, -1, sizeof(fir));
+	memset(son,-1,sizeof(son));
+}
+/**
+* 加边
+*/
+void addEdge(int u, int v) {
+	edge[cnt].v = v;
+	edge[cnt].next = fir[u];
+	fir[u] = cnt++;
+}
+
+
+int siz[N],top[N],son[N];//N代表节点个数
+int dep[N],tid[N],rank1[N],fa[N];
+/*
+siz[]数组，用来保存以x为根的子树节点个数
+top[]数组，用来保存当前节点的所在链的顶端节点
+son[]数组，用来保存重儿子
+dep[]数组，用来保存当前节点的深度
+fa[]数组，用来保存当前节点的父亲
+tid[]数组，用来保存树中每个节点剖分后的新编号
+rank[]数组，用来保存当前节点在线段树中的位置
+*/
+
+void dfs1(int u,int father,int d)
+{
+    dep[u]=d;
+    fa[u]=father;
+    siz[u]=1;
+    for(int i=fir[u];~i;i=edge[i].next)
+    {
+        int v=edge[i].v;
+        if(v!=father)
+        {
+            dfs1(v,u,d+1);
+            siz[u]+=siz[v];
+            if(son[u]==-1||siz[v]>siz[son[u]])
+                son[u]=v;
+        }
+    }
+}
+
+void dfs2(int u,int tp)
+{
+    top[u]=tp;
+    tid[u]=++tim;
+    rank1[tid[u]]=u;
+    if(son[u]==-1) return;
+    dfs2(son[u],tp);
+    for(int i=fir[u];~i;i=edge[i].next)
+    {
+        int v=edge[i].v;
+        if(v!=son[u]&&v!=fa[u])
+            dfs2(v,v);
+    }
+}
+//两次dfs
+dfs1(1,0,0);
+dfs2(1,1);
+
+//注意赋值情况
+	while(top[a]!=top[b])
+	{
+		if(dep[top[a]]<dep[top[b]]) swap(a,b);
+		updata(1,tid[top[a]],tid[a],at);
+		a=fa[top[a]];
+	}
+	if(dep[a]>dep[b]) swap(a,b);
+	updata(1,tid[a],tid[b],at);

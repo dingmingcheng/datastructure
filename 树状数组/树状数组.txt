@@ -1,0 +1,70 @@
+/**
+*
+* 位运算 计算机内用补码表示数字
+* 此函数返回的 最低为1的那一位
+*  5:00000000 00000000 00000000 00000101
+* -5:11111111 11111111 11111111 11111011 //return 1
+*  
+*  6:00000000 00000000 00000000 00000110
+* -6:11111111 11111111 11111111 11111010 //return 2
+*
+* 18:00000000 00000000 00000000 00010010
+*-18:11111111 11111111 11111111 11101110 // return 2
+* 
+* 16:00000000 00000000 00000000 00010000
+*-16:11111111 11111111 11111111 11110000 // return 16
+*
+*
+* 主要用于查询任意两位之间的所有元素之和，但是每次只能修改一个元素的值；
+* 经过简单修改可以在log(n)的复杂度下进行范围修改，但是这时只能查询其中一个元素的值(如果加入多个辅助数组则可以实现区间修改与区间查询)。
+*
+* Cn代表树的节点，也就代表了函数中的modify
+* C1 = A1
+* C2 = A1 + A2
+* C3 = A3
+* C4 = A1 + A2 + A3 + A4
+* C5 = A5
+* C6 = A5 + A6
+* C7 = A7
+* C8 = A1 + A2 + A3 + A4 + A5 + A6 + A7 + A8
+* 根据lowbit 的值可以
+*
+* 常见的有求逆序对
+*
+*/
+int lowbit(int x)
+{
+    return x & (-x);
+}
+void modify(int x,int add)
+{  
+    while(x<=MAXN)//!!!!!!!!!!!!!!MAXN
+    {      
+        a[x]+=add;    
+        x+=lowbit(x); 
+    }
+}
+int get_sum(int x)//<=x
+{  
+    int ret=0; 
+    while(x!=0)  
+    {       
+        ret+=a[x];   
+        x-=lowbit(x);   
+    }  
+    return ret;
+}
+void modify(int x,int y,int data)
+{
+    for(int i=x;i<MAXN;i+=lowbit(i))
+        for(int j=y;j<MAXN;j+=lowbit(j))
+            a[i][j]+=data;
+}
+int get_sum(int x,int y)
+{
+    int res=0;
+    for(int i=x;i>0;i-=lowbit(i))
+        for(int j=y;j>0;j-=lowbit(j))
+            res+=a[i][j];
+    return res;
+}

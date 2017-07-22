@@ -1,0 +1,45 @@
+/**
+*
+* Manacher算法O(n)求回文
+* 主要思想，插入# 
+* P[i] 来记录以字符S[i]为中心的最长回文子串向左/右扩张的长度（包括S[i]）
+* S     #  1  #  2  #  2  #  1  #  2  #  3  #  2  #  1  #
+* P     1  2  1  2  5  2  1  4  1  2  1  6  1  2  1  2  1
+* (可以看出，P[i]-1正好是原字符串中回文串的总长度）
+*
+**/
+void Manacher(char *str)//注意char的长度不能和要求差不多
+{
+    int len=strlen(str);
+    for(int i=len;i>=0;--i){//插入‘#‘
+        str[2*i+2]=str[i];
+        str[2*i+1]='#';
+    }
+    str[0]='*';
+    len=2*len+1;
+    int mx=0;
+    int idx=0;
+    for(int i=1; i<len; i++)
+    {
+        p[i]=mx>i?min(p[2*idx-i],mx-i):1;
+        while(str[i+p[i]]==str[i-p[i]])
+        p[i]++;
+        if(i+p[i]>mx)
+        {
+            mx=i+p[i];
+            idx=i;
+        }
+        if(str[i] == '#' && p[i] == 1) continue;//求所有回文串长度
+        if(str[i]=='#')                 
+        {
+                for(int j=2;j<=p[i]-1;j+=2) we[j]++;
+        }
+        else {
+                for(int j=1;j<=p[i]-1;j+=2) we[j]++;
+        }
+    }
+//    for(int i=1;i<len;i++)
+//    {
+//            printf("%d\n",p[i]-1);
+//    }
+}

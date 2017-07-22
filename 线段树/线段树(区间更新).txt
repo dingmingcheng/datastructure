@@ -1,0 +1,128 @@
+#include <iostream>
+using namespace std;
+
+#define ll long long
+#define MAX_N 100005
+int big;
+typedef struct node
+{
+	int left;
+	int right;
+	ll data;
+	int maxx;
+	ll lazy;
+}node;
+int a1[MAX_N];
+node stu[MAX_N * 4];
+//int num[MAX_N+1];
+/**
+* rt为当前父亲节点下标
+* 区间更新最重要的地方，直接影响了时间复杂度
+* 给每个节点添加了一个lazy标记，当其子节点要用时，将这个值往下传
+* 根据题意更改
+*
+*/
+void pushudown(int rt)
+{
+	if (stu[rt].lazy)
+	{
+		stu[rt * 2].lazy += stu[rt].lazy;
+		stu[rt * 2 + 1].lazy += stu[rt].lazy;
+		stu[rt * 2].data += (stu[rt * 2].right - stu[rt * 2].left + 1)*stu[rt].lazy;
+		stu[rt * 2 + 1].data += (stu[rt * 2 + 1].right - stu[rt * 2 + 1].left + 1)*stu[rt].lazy;
+		stu[rt].lazy = 0;
+	}
+}
+/***
+* ii代表树的节点下标
+* 将子节点的值赋值给父亲节点
+* 根据题意更改
+*/
+void pushup(int ii){
+	stu[ii].data = stu[ii * 2].data + stu[ii * 2 + 1].data;
+}
+
+/***
+*
+* 递归建树
+*
+*/
+void CreateTree(int ii, int a, int b)
+{
+	stu[ii].left = a;
+	stu[ii].right = b;
+	stu[ii].maxx = 0;
+	stu[ii].lazy = 0;
+	
+	if (a == b)
+	{
+		stu[ii].data = a1[a];
+		return;
+	}
+	else
+	{
+		int mid = (a + b) >> 1;
+		CreateTree(ii * 2, a, mid);
+		CreateTree(ii * 2 + 1, mid + 1, b);
+	}
+	pushup(ii);
+}
+/**
+* 
+* 线段树树更新函数
+* ii代表树的节点下标  函数代表对（a，b）区间进行更新 
+* 根据题意更改
+*/
+void updata(int ii, int a, int b, int at)
+{
+	if (stu[ii].left == a && stu[ii].right == b)
+	{
+		stu[ii].lazy += at;
+		stu[ii].data += (ll)(b - a + 1)*at;
+		return;
+	}
+	pushudown(ii);
+	int mid = (stu[ii].left + stu[ii].right) >> 1;
+	if (b <= mid)
+	{
+		updata(ii * 2, a, b, at);
+	}
+	else if (a>mid)
+	{
+		updata(ii * 2 + 1, a, b, at);
+	}
+	else
+	{
+		updata(ii * 2, a, mid, at);
+		updata(ii * 2 + 1, mid + 1, b, at);
+	}
+	pushup(ii);
+}
+/**
+* 
+* ii代表树的节点下标
+* 在区间[a,b]中寻找答案
+* 根据题意更改
+*/
+ll find1(int ii, int a, int b)
+{
+	if (stu[ii].left == a && stu[ii].right == b)
+	{
+		return stu[ii].data;
+	}
+	pushudown(ii);
+	int mid = (stu[ii].left + stu[ii].right) >> 1;
+	if (b <= mid)
+	{
+		return find1(ii * 2, a, b);
+	}
+	else if (a > mid)
+	{
+		return find1(ii * 2 + 1, a, b);
+	}
+	else
+	{
+		return find1(ii * 2, a, mid)+find1(ii * 2 + 1, mid + 1, b);
+	}
+	pushup(ii);
+}

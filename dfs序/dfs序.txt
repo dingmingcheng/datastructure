@@ -1,0 +1,17 @@
+
+/**
+*
+* 根据代码也好理解，
+* 就是根据一个dfs，为树上的每个节点设定一个区间，构成一棵类似线段树的树
+*
+*
+**/
+
+void dfs(int u,int fa){
+    in[u] = ++tot;
+    for(int k=fir[u];k!=-1;k=edge[k].next){
+        if(edge[k].v == fa) continue;
+        dfs(edge[k].v,u);
+    }
+    out[u] = tot;
+}
